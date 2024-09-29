@@ -1,5 +1,6 @@
 package com.example.mychat.domain.location
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
 import jakarta.annotation.PreDestroy
 import kotlinx.coroutines.runBlocking
@@ -25,6 +26,7 @@ class LocationLifeCycleHandler(
         session: WebSocketSession,
     ) {
         lock.withLock {
+            logger.info { "[LocationLifeCycleHandler][onConnect] (userId: $userId, session: ${session.id})" }
             globalMap.put(userId)
             localMap.set(userId, session)
         }
@@ -32,6 +34,7 @@ class LocationLifeCycleHandler(
 
     suspend fun onDisConnect(session: WebSocketSession) {
         lock.withLock {
+            logger.info { "[LocationLifeCycleHandler][onDisConnect] (session: ${session.id})" }
             val userId = localMap.clear(session)
             if (userId != null) {
                 globalMap.clear(userId)
@@ -40,11 +43,16 @@ class LocationLifeCycleHandler(
     }
 
     @PreDestroy
-    fun onDestroy() =
+    fun onDestroy() {
         runBlocking {
             lock.withLock {
                 val userIds = localMap.getAllUserIds()
                 globalMap.clearAll(userIds)
             }
         }
+    }
+
+    companion object {
+        private val logger = KotlinLogging.logger {}
+    }
 }

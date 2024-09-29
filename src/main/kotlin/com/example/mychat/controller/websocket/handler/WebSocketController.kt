@@ -30,7 +30,7 @@ class WebSocketController(
                 session.close(CloseStatus(ErrorType.USER_NOT_FOUND.code, ErrorType.USER_NOT_FOUND.externalMessage))
                 return@launch
             }
-
+            logger.info { "[WebSocketController][ConnectionEstablished] (userId: $userId, session: ${session.id})" }
             locationLifeCycleHandler.onConnect(userId, session)
         }
     }
@@ -41,6 +41,7 @@ class WebSocketController(
     ) {
         scope.launch {
             val bytes = message.asBytes()
+            print(String(bytes))
             val header = MessageConverter.deserializeHeader(bytes)
             messageRouter.route(header, bytes)
         }
@@ -50,7 +51,16 @@ class WebSocketController(
         session: WebSocketSession,
         exception: Throwable,
     ) {
-        TODO("Not yet implemented")
+        scope.launch {
+            if (session.isOpen) {
+                session.close()
+            }
+            val isClosed = session.isOpen.not()
+            locationLifeCycleHandler.onDisConnect(session)
+            logger.warn {
+                "[WebSocketController][handleTransportError] (session: ${session.id}, exception: $exception, closed: $isClosed)"
+            }
+        }
     }
 
     override fun afterConnectionClosed(
@@ -63,7 +73,7 @@ class WebSocketController(
     }
 
     override fun supportsPartialMessages(): Boolean {
-        TODO("Not yet implemented")
+        return false
     }
 
     companion object {

@@ -1,13 +1,22 @@
 package com.example.mychat.domain.message
 
+import com.example.mychat.domain.message.model.MessageHeader
 import com.fasterxml.jackson.core.type.TypeReference
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 
 object MessageConverter {
-    val objectMapper = jacksonObjectMapper()
+    val objectMapper: ObjectMapper =
+        jacksonObjectMapper()
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
     fun deserializeHeader(bytes: ByteArray): MessageHeader {
-        return objectMapper.readValue(bytes, MessageHeader::class.java)
+        val rootNode = objectMapper.readTree(bytes)
+        val headerNode = rootNode["header"]
+
+        return objectMapper.treeToValue(headerNode, MessageHeader::class.java)
     }
 
     inline fun <reified T> deserialize(bytes: ByteArray): T {
