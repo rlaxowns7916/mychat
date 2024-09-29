@@ -13,6 +13,10 @@ class LocalMap {
         return hubsByUser.keys.toList()
     }
 
+    fun get(userId: String): WebSocketSession? {
+        return hubsByUser[userId]
+    }
+
     fun set(
         userId: String,
         session: WebSocketSession,

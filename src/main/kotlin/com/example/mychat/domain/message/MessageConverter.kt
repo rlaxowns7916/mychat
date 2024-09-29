@@ -12,6 +12,10 @@ object MessageConverter {
         jacksonObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
+    inline fun <reified T> serialize(message: T): ByteArray {
+        return objectMapper.writeValueAsBytes(message)
+    }
+
     fun deserializeHeader(bytes: ByteArray): MessageHeader {
         val rootNode = objectMapper.readTree(bytes)
         val headerNode = rootNode["header"]
@@ -22,5 +26,10 @@ object MessageConverter {
     inline fun <reified T> deserialize(bytes: ByteArray): T {
         val typeRef = object : TypeReference<T>() {}
         return objectMapper.readValue(bytes, typeRef)
+    }
+
+    inline fun <reified T> deserialize(string: String): T {
+        val typeRef = object : TypeReference<T>() {}
+        return objectMapper.readValue(string, typeRef)
     }
 }

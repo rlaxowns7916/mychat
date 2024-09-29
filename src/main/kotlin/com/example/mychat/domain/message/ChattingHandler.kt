@@ -11,7 +11,6 @@ class ChattingHandler(
 ) {
     suspend fun handle(message: Message.Chat) {
         val routingDestination = globalMap.get(message.body.to) ?: throw IllegalArgumentException("Destination not found")
-
-        pubSubManager.publish(routingDestination.toChannel(), message.body.payload)
+        pubSubManager.publish(routingDestination.toChannel(MessageType.CHAT), String(MessageConverter.serialize<Message.Chat>(message)))
     }
 }

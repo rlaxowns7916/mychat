@@ -11,10 +11,11 @@ class MessageConverterTest {
             """
             {
                 "header": {
-                    "type": "CHAT"
+                    "type": "CHAT",
+                    "userId": "taejun1"
                 },
                 "body": {
-                    "to": "taejun",
+                    "to": "taejun2",
                     "payload": "hello"
                 }
             }
@@ -22,6 +23,7 @@ class MessageConverterTest {
 
         val actual = assertDoesNotThrow { MessageConverter.deserializeHeader(given.toByteArray()) }
         assertThat(actual.type).isEqualTo(MessageType.CHAT)
+        assertThat(actual.userId).isEqualTo("taejun1")
     }
 
     @Test
@@ -30,18 +32,21 @@ class MessageConverterTest {
             """
             {
                 "header": {
-                    "type": "CHAT"
+                    "type": "CHAT",
+                    "userId": "taejun1"
                 },
                 "body": {
-                    "to": "taejun",
+                    "to": "taejun2",
                     "payload": "hello"
                 }
             }
             """.trimIndent()
 
         val actual = assertDoesNotThrow { MessageConverter.deserialize<Message.Chat>(given.toByteArray()) }
+        assertThat(actual.header.userId).isEqualTo("taejun1")
         assertThat(actual.header.type).isEqualTo(MessageType.CHAT)
-        assertThat(actual.body.to).isEqualTo("taejun")
+
+        assertThat(actual.body.to).isEqualTo("taejun2")
         assertThat(actual.body.payload).isEqualTo("hello")
     }
 }

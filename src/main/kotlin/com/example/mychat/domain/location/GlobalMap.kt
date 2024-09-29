@@ -20,6 +20,10 @@ class GlobalMap(
         logger.info { "[GlobalMap][Initialize] (instnaceId: $instanceLocationId)" }
     }
 
+    fun get(): GlobalLocation {
+        return GlobalLocation(instanceLocationId)
+    }
+
     suspend fun get(userId: String): GlobalLocation? {
         return redisStringRepository.get<String>(userId)?.let {
             return GlobalLocation(it)

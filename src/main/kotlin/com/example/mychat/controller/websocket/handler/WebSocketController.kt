@@ -41,7 +41,6 @@ class WebSocketController(
     ) {
         scope.launch {
             val bytes = message.asBytes()
-            print(String(bytes))
             val header = MessageConverter.deserializeHeader(bytes)
             messageRouter.route(header, bytes)
         }

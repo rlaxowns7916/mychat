@@ -22,11 +22,10 @@ class MessageRouter(
         when (type) {
             MessageType.CHAT -> {
                 val message = MessageConverter.deserialize<Message.Chat>(payload)
-                logger.info { "[MessageRouter][route] (header: $header, message: $message, payload: $payload)" }
                 chattingHandler.handle(message)
             }
-            MessageType.PING -> {
-                val message = MessageConverter.deserialize<Message.Ping>(payload)
+            MessageType.PINGPONG -> {
+                val message = MessageConverter.deserialize<Message.PingPong>(payload)
                 pingPongHandler.handle(message)
             }
         }

@@ -36,7 +36,7 @@ class RedisStringRepository(
     }
 
     suspend fun deleteAll(keys: List<String>): Boolean {
-        return redisTemplate.delete(keys.toFlux())
+        return redisTemplate.unlink(keys.toFlux())
             .awaitSingle() == keys.size.toLong()
     }
 }
