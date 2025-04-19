@@ -1,4 +1,4 @@
-package com.example.coreapi
+package com.example
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

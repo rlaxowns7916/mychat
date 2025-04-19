@@ -1,1 +1,9 @@
-spring.application.name=core-api
+spring:
+  application:
+    name: core-api
+  profiles:
+    active: local
+  config:
+    import:
+      - session-map.yml
+
