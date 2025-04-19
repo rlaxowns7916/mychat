@@ -7,5 +7,5 @@ import org.springframework.boot.runApplication
 class WebsocketGatewayApplication
 
 fun main(args: Array<String>) {
-	runApplication<WebsocketGatewayApplication>(*args)
+    runApplication<WebsocketGatewayApplication>(*args)
 }

@@ -22,7 +22,9 @@ rootProject.name = "mychat"
 
 include(
     ":core-api",
+    ":consumer",
     ":websocket-gateway",
     ":modules:session-map",
-    ":storage:rdb"
+    ":storage:rdb",
+    ":storage:chat",
 )

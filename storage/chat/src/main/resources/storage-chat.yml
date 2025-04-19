@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://root:1q2w3e4r!!@localhost:27017/chatdb?authSource=admin
+      auto-index-creation: true
+      repositories:
+        type: reactive
+  
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+      fail-on-empty-beans: false
+    deserialization:
+      fail-on-unknown-properties: false
+    default-property-inclusion: non_null
+
+mongodb:
+  connection:
+    connection-per-host: 100
+    min-connections-per-host: 10
+    max-connection-idle-time: 60000
+    max-connection-life-time: 120000
+    socket-timeout: 10000
+    connect-timeout: 10000
+    max-wait-time: 15000
+    heartbeat-frequency: 10000

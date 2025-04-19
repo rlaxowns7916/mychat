@@ -13,8 +13,7 @@ import java.nio.file.Files
 import java.util.concurrent.TimeUnit
 
 object EmbeddedRedisExtensions {
-
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
 
     fun createEmbeddedRedis(
         resourceName: String,
@@ -112,7 +111,7 @@ object EmbeddedRedisExtensions {
             prop.isAccessible = true
             prop.set(this, args)
         }.onFailure {
-            logger.error(it){ "[RedisServer][Bind][Fail]" }
+            logger.error(it) { "[RedisServer][Bind][Fail]" }
         }
     }
 }

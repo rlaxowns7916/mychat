@@ -17,7 +17,7 @@ internal class EmbeddedRedisStorageConfiguration {
 
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        logger.info{"[EmbeddedRedis][Storage][Connection] (host: 127.0.0.1, port:$port)"}
+        logger.info { "[EmbeddedRedis][Storage][Connection] (host: 127.0.0.1, port:$port)" }
         return LettuceConnectionFactory("127.0.0.1", port)
     }
 
@@ -30,7 +30,7 @@ internal class EmbeddedRedisStorageConfiguration {
                 RedisServer(port)
             }
         redisServer.start()
-        logger.info{"[EmbeddedRedis][Storage][Start][Complete] (port:$port)"}
+        logger.info { "[EmbeddedRedis][Storage][Start][Complete] (port:$port)" }
     }
 
     @PreDestroy
@@ -39,7 +39,7 @@ internal class EmbeddedRedisStorageConfiguration {
         logger.info("[EmbeddedRedis][Stop]")
     }
 
-    companion object{
-        private val logger = KotlinLogging.logger {  }
+    companion object {
+        private val logger = KotlinLogging.logger { }
     }
 }

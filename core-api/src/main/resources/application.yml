@@ -5,5 +5,5 @@ spring:
     active: local
   config:
     import:
-      - session-map.yml
-
+      - storage-rdb.yml
+      - storage-chat.yml
