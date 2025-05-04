@@ -1,14 +1,16 @@
 package com.example.websocketgateway.websocket
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.netty.channel.ChannelHandler
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
+import io.netty.handler.codec.http.websocketx.WebSocketFrame
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
 import io.netty.handler.codec.stomp.StompSubframeAggregator
 import io.netty.handler.codec.stomp.StompSubframeDecoder
-import io.netty.handler.codec.stomp.StompSubframeEncoder
 
+@ChannelHandler.Sharable
 class StompProtocolHandler(
     private val stompMessageHandler: StompMessageHandler,
 ) : ChannelInboundHandlerAdapter() {
@@ -16,6 +18,19 @@ class StompProtocolHandler(
 
     override fun channelActive(ctx: ChannelHandlerContext) {
         logger.info { "[StompProtocolHandler][Active] (client: ${ctx.channel().remoteAddress()})" }
+    }
+
+    override fun channelRead(
+        ctx: ChannelHandlerContext,
+        msg: Any,
+    ) {
+        if (msg is WebSocketFrame) {
+            logger.info { "[StompProtocolHandler][WebSocketFrame] (client: ${ctx.channel().remoteAddress()})" }
+            ctx.fireChannelRead(msg.retain())
+        } else {
+            logger.warn { "[StompProtocolHandler][UnknownMessage] (client: ${ctx.channel().remoteAddress()})" }
+            ctx.close()
+        }
     }
 
     override fun userEventTriggered(
@@ -30,7 +45,7 @@ class StompProtocolHandler(
 
             logger.info {
                 """
-                [StompProtocolHandler][HandshakeComplete]( 
+                [StompProtocolHandler][WebSocketHandshakeComplete]( 
                     - client: $remoteAddress, 
                     - requestUri: $requestUri, 
                     - selectedSubProtocol: $selectedSubProtocol
@@ -51,12 +66,17 @@ class StompProtocolHandler(
                  */
                 .addLast(WebSocketFrameAggregator(65536))
                 /**
-                 * StompSubframeEncoder: STOMP 프레임 인코더
-                 * - 아웃바운드(서버→클라이언트) 방향으로 STOMP 프레임을 인코딩
-                 * - 인코더는 아웃바운드 흐름(파이프라인 뒤→앞)에서 작동하므로 디코더보다 앞에 위치
-                 * - 이렇게 해야 writeAndFlush()한 메시지가 인코더를 통과함
+                 * StompSubFrameToWebsocketFrameEncoder
+                 * - StompSubFrame -> WebSocketFrame
+                 * - 아래 있는 StompSubframeEncoder는 StompSubFrame -> ByteBuf
                  */
-                .addLast(StompSubframeEncoder())
+                .addLast(StompSubFrameToWebsocketFrameEncoder())
+                /**
+                 * WebsocketFrameToStompSubFrameDecoder
+                 * - WebSocketFrame -> StompSubFrame
+                 * - WebSocketFrame의 payload를 StompSubFrame으로 변환
+                 */
+                .addLast(WebsocketFrameToStompSubFrameDecoder())
                 /**
                  * StompSubframeDecoder: STOMP 프레임 디코더
                  * - 인바운드(클라이언트→서버) 방향으로 WebSocket 메시지를 STOMP 프레임으로 변환
@@ -71,7 +91,6 @@ class StompProtocolHandler(
                  */
                 .addLast(StompSubframeAggregator(65536))
                 .addLast(stompMessageHandler)
-                .remove(this)
         }
     }
 
