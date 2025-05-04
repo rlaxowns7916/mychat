@@ -9,7 +9,7 @@ fun withEmbeddedChannel(
 ) {
     val channel = EmbeddedChannel(*channelHandlers)
     try {
-        block()
+        block(channel)
     } finally {
         channel.close()
     }
