@@ -1,4 +1,4 @@
-package com.example.websocketgateway.domain.auith
+package com.example.websocketgateway.domain.auth
 
 import com.example.websocketgateway.domain.exception.DomainErrorType
 import com.example.websocketgateway.domain.exception.DomainException
