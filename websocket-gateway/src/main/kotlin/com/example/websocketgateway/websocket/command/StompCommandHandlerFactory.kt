@@ -1,14 +1,11 @@
 package com.example.websocketgateway.websocket.command
 
-import com.example.websocketgateway.domain.auith.AuthKeyValidator
 import com.example.websocketgateway.websocket.StompVersion
 import io.netty.handler.codec.stomp.StompCommand
 import org.springframework.stereotype.Component
 
 @Component
-class StompCommandHandlerFactory(
-    private val authKeyValidator: AuthKeyValidator,
-) {
+class StompCommandHandlerFactory {
     fun create(
         version: StompVersion,
         command: StompCommand,

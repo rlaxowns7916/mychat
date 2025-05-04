@@ -1,7 +1,7 @@
 package com.example.websocketgateway.websocket
 
+import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
-import io.netty.channel.socket.SocketChannel
 import io.netty.handler.codec.http.HttpObjectAggregator
 import io.netty.handler.codec.http.HttpServerCodec
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
@@ -11,8 +11,8 @@ import java.util.concurrent.TimeUnit
 
 class WebSocketServerPipeLineInitializer(
     private val stompMessageHandler: StompMessageHandler,
-) : ChannelInitializer<SocketChannel>() {
-    override fun initChannel(ch: SocketChannel) {
+) : ChannelInitializer<Channel>() {
+    override fun initChannel(ch: Channel) {
         val pipeLine = ch.pipeline()
         /**
          * HttpServerCodec: HTTP 요청/응답 코덱

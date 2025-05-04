@@ -33,13 +33,6 @@ subprojects {
         }
     }
 
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-        kotlinOptions {
-            jvmTarget = "21"
-            freeCompilerArgs += "-Xuse-k2"
-        }
-    }
-
     dependencies {
         implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
         implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -50,5 +43,14 @@ subprojects {
         testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         implementation("io.github.oshai:kotlin-logging-jvm:${project.property("kotlinLoggingVersion")}")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin:${project.property("jacksonKotlinVersion")}")
+    }
+    kotlin {
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xjsr305=strict")
+        }
+    }
+
+    tasks.withType<Test> {
+        useJUnitPlatform()
     }
 }

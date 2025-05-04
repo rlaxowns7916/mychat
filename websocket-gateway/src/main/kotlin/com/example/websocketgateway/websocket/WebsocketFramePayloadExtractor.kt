@@ -5,7 +5,7 @@ import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.MessageToMessageDecoder
 import io.netty.handler.codec.http.websocketx.WebSocketFrame
 
-class WebsocketFrameToStompSubFrameDecoder : MessageToMessageDecoder<WebSocketFrame>() {
+class WebsocketFramePayloadExtractor : MessageToMessageDecoder<WebSocketFrame>() {
     override fun decode(
         ctx: ChannelHandlerContext,
         msg: WebSocketFrame,

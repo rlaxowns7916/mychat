@@ -4,12 +4,12 @@ import com.example.websocketgateway.domain.exception.DomainErrorType
 import com.example.websocketgateway.domain.exception.DomainException
 import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.netty.channel.ChannelHandler
+import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.SimpleChannelInboundHandler
 import io.netty.handler.codec.stomp.StompFrame
 
-@ChannelHandler.Sharable
+@Sharable
 class StompMessageHandler(
     private val commandHandlerFactory: StompCommandHandlerFactory,
 ) : SimpleChannelInboundHandler<StompFrame>() {

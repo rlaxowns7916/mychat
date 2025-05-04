@@ -1,6 +1,6 @@
 pluginManagement {
     plugins {
-        val kotlinVersion = "2.0.0-RC1"
+        val kotlinVersion = "1.9.21"
         val springBootVersion = "3.3.3"
         val springDependencyManagementVersion = "1.1.4"
         val ktlintVersion = "12.1.0"

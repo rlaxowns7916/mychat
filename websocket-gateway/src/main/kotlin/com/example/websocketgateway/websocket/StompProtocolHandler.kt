@@ -1,16 +1,15 @@
 package com.example.websocketgateway.websocket
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.netty.channel.ChannelHandler
+import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
-import io.netty.handler.codec.http.websocketx.WebSocketFrame
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
 import io.netty.handler.codec.stomp.StompSubframeAggregator
 import io.netty.handler.codec.stomp.StompSubframeDecoder
 
-@ChannelHandler.Sharable
+@Sharable
 class StompProtocolHandler(
     private val stompMessageHandler: StompMessageHandler,
 ) : ChannelInboundHandlerAdapter() {
@@ -18,19 +17,6 @@ class StompProtocolHandler(
 
     override fun channelActive(ctx: ChannelHandlerContext) {
         logger.info { "[StompProtocolHandler][Active] (client: ${ctx.channel().remoteAddress()})" }
-    }
-
-    override fun channelRead(
-        ctx: ChannelHandlerContext,
-        msg: Any,
-    ) {
-        if (msg is WebSocketFrame) {
-            logger.info { "[StompProtocolHandler][WebSocketFrame] (client: ${ctx.channel().remoteAddress()})" }
-            ctx.fireChannelRead(msg.retain())
-        } else {
-            logger.warn { "[StompProtocolHandler][UnknownMessage] (client: ${ctx.channel().remoteAddress()})" }
-            ctx.close()
-        }
     }
 
     override fun userEventTriggered(
@@ -72,11 +58,13 @@ class StompProtocolHandler(
                  */
                 .addLast(StompSubFrameToWebsocketFrameEncoder())
                 /**
-                 * WebsocketFrameToStompSubFrameDecoder
-                 * - WebSocketFrame -> StompSubFrame
-                 * - WebSocketFrame의 payload를 StompSubFrame으로 변환
+                 * WebsocketFramePayloadExtractor
+                 * - WebSocketFrame -> Payload
+                 * - WebSocketFrame의 payload를 추출
+                 * - Stomp는 WebSocketFrame의 payload를 사용하기 떄문
+                 * -  WebSocketFrameAggregator가 조합한 WebSocket 메시지를 입력으로 받음
                  */
-                .addLast(WebsocketFrameToStompSubFrameDecoder())
+                .addLast(WebsocketFramePayloadExtractor())
                 /**
                  * StompSubframeDecoder: STOMP 프레임 디코더
                  * - 인바운드(클라이언트→서버) 방향으로 WebSocket 메시지를 STOMP 프레임으로 변환
