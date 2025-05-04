@@ -1,0 +1,44 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # PR의 변경된 파일을 파악하기 위해 전체 히스토리 가져오기
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Test
+        run: ./gradlew test
+
+      - name: Generate Kover coverage report
+        run: ./gradlew koverXmlReport
+
+      - name: Add coverage report to PR
+        id: kover
+        uses: mi-kas/kover-report@v1
+        with:
+          path: |
+            ${{ github.workspace }}/core-api/build/reports/kover/report.xml
+            ${{ github.workspace }}/websocket-gateway/build/reports/kover/report.xml
+            ${{ github.workspace }}/modules/session-map/build/reports/kover/report.xml
+          title: Code Coverage Report
+          update-comment: true
+          min-coverage-overall: 80
+          min-coverage-changed-files: 70
+          coverage-counter-type: LINE
