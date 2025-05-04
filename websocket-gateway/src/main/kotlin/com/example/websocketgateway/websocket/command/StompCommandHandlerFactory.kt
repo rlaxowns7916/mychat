@@ -11,7 +11,7 @@ class StompCommandHandlerFactory {
         command: StompCommand,
     ): StompCommandHandler {
         return when (command) {
-            StompCommand.CONNECT -> ConnectHandler(version)
+            StompCommand.CONNECT -> StompConnectHandler(version)
             StompCommand.SEND -> TODO()
             StompCommand.SUBSCRIBE -> TODO()
             StompCommand.UNSUBSCRIBE -> TODO()

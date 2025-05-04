@@ -13,8 +13,7 @@ class WebSocketServerRunner(
     private val stompCommandHandlerFactory: StompCommandHandlerFactory,
 ) : ApplicationRunner {
     override fun run(args: ApplicationArguments?) {
-        val stompMessageHandler = StompMessageHandler(stompCommandHandlerFactory)
-        val webSocketServer = WebSocketServer(port, stompMessageHandler)
+        val webSocketServer = WebSocketServer(port, stompCommandHandlerFactory)
 
         webSocketServer.start()
     }

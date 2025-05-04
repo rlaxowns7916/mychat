@@ -1,5 +1,6 @@
 package com.example.websocketgateway.websocket
 
+import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.bootstrap.ServerBootstrap
 import io.netty.channel.Channel
@@ -11,7 +12,7 @@ import io.netty.handler.logging.LoggingHandler
 
 class WebSocketServer(
     private val port: Int,
-    private val stompMessageHandler: StompMessageHandler,
+    private val stompCommandHandlerFactory: StompCommandHandlerFactory,
 ) {
     private val bossGroup = NioEventLoopGroup(1)
     private val workerGroup = NioEventLoopGroup()
@@ -26,7 +27,7 @@ class WebSocketServer(
                 .handler(LoggingHandler(LogLevel.DEBUG))
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
-                .childHandler(WebSocketServerPipeLineInitializer(stompMessageHandler))
+                .childHandler(WebSocketServerPipeLineInitializer(stompCommandHandlerFactory))
 
             channel = bootStrap.bind(port).sync().channel()
             logger.info { "[WebSocketServer][Started] (port:$port)" }
