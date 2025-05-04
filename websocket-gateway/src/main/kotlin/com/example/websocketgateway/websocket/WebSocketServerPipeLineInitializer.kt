@@ -1,5 +1,6 @@
 package com.example.websocketgateway.websocket
 
+import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
 import io.netty.channel.Channel
 import io.netty.channel.ChannelInitializer
 import io.netty.handler.codec.http.HttpObjectAggregator
@@ -10,7 +11,7 @@ import io.netty.handler.timeout.IdleStateHandler
 import java.util.concurrent.TimeUnit
 
 class WebSocketServerPipeLineInitializer(
-    private val stompMessageHandler: StompMessageHandler,
+    private val commandHandlerFactory: StompCommandHandlerFactory,
 ) : ChannelInitializer<Channel>() {
     override fun initChannel(ch: Channel) {
         val pipeLine = ch.pipeline()
@@ -49,7 +50,7 @@ class WebSocketServerPipeLineInitializer(
          * - 매개변수: 읽기 타임아웃(60초), 쓰기 타임아웃(30초), 전체 타임아웃(사용안함)
          */
         pipeLine.addLast(IdleStateHandler(60, 30, 0, TimeUnit.SECONDS))
-        pipeLine.addLast(StompProtocolHandler(stompMessageHandler))
+        pipeLine.addLast(StompProtocolHandler(commandHandlerFactory))
     }
 
     companion object {

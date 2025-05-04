@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test
 
 class WebSocketServerChannelPipeLineTest {
     private val stompMessageHandler = StompMessageHandler(StompCommandHandlerFactory())
-    private val webSocketServerInitializer = WebSocketServerPipeLineInitializer(stompMessageHandler)
+    private val webSocketServerInitializer = WebSocketServerPipeLineInitializer(StompCommandHandlerFactory())
 
     @Test
     fun `WebSocket Upgrade 이전 ChannelPipeLine 검증`() =

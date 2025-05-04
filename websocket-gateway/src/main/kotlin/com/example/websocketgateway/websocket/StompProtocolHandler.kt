@@ -1,7 +1,7 @@
 package com.example.websocketgateway.websocket
 
+import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.netty.channel.ChannelHandler.Sharable
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator
@@ -9,9 +9,8 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler
 import io.netty.handler.codec.stomp.StompSubframeAggregator
 import io.netty.handler.codec.stomp.StompSubframeDecoder
 
-@Sharable
 class StompProtocolHandler(
-    private val stompMessageHandler: StompMessageHandler,
+    private val commandHandlerFactory: StompCommandHandlerFactory,
 ) : ChannelInboundHandlerAdapter() {
     private val logger = KotlinLogging.logger {}
 
@@ -78,19 +77,11 @@ class StompProtocolHandler(
                  * - 이 과정이 없으면 stompMessageHandler가 불완전한 STOMP 메시지를 받을 수 있음
                  */
                 .addLast(StompSubframeAggregator(65536))
-                .addLast(stompMessageHandler)
+                .addLast(StompMessageHandler(commandHandlerFactory))
         }
     }
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
         logger.info { "[StompProtocolHandler][InActive] (client: ${ctx.channel().remoteAddress()})" }
-    }
-
-    override fun exceptionCaught(
-        ctx: ChannelHandlerContext,
-        cause: Throwable,
-    ) {
-        logger.error(cause) { "[StompProtocolHandler][ErrorCaught]" }
-        ctx.close()
     }
 }
