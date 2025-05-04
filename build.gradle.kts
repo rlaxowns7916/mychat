@@ -9,14 +9,6 @@ plugins {
     kotlin("plugin.spring")
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "rlaxowns7916_mychat")
-        property("sonar.organization", "rlaxowns7916")
-        property("sonar.host.url", "https://sonarcloud.io")
-    }
-}
-
 allprojects {
     group = "com.example"
     version = "0.0.1-SNAPSHOT"
