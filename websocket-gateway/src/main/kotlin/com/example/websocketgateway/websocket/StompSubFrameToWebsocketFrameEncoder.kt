@@ -21,7 +21,6 @@ class StompSubFrameToWebsocketFrameEncoder : StompSubframeEncoder() {
         msg: StompSubframe,
         out: MutableList<Any>,
     ) {
-        logger.info { "[StompSubFrameToWebsocketFrameEncoder] (stomp -> ByteBuf)" }
         super.encode(ctx, msg, out)
     }
 
