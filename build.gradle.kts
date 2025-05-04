@@ -3,9 +3,18 @@ plugins {
     id("io.spring.dependency-management")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.kotlinx.kover")
+    id("org.sonarqube")
 
     kotlin("jvm")
     kotlin("plugin.spring")
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "rlaxowns7916_mychat")
+        property("sonar.organization", "rlaxowns7916")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
 }
 
 allprojects {

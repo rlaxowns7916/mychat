@@ -5,6 +5,7 @@ pluginManagement {
         val springDependencyManagementVersion: String by settings
         val ktlintVersion: String by settings
         val koverVersion: String by settings
+        val sonarqubeVersion: String by settings
 
         id("org.jetbrains.kotlin.jvm") version kotlinVersion
         id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
@@ -12,6 +13,7 @@ pluginManagement {
         id("io.spring.dependency-management") version springDependencyManagementVersion
         id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
         id("org.jetbrains.kotlinx.kover") version koverVersion
+        id("org.sonarqube") version sonarqubeVersion
     }
 
     repositories {
