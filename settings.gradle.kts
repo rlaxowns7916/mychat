@@ -1,15 +1,17 @@
 pluginManagement {
     plugins {
-        val kotlinVersion = "1.9.21"
-        val springBootVersion = "3.3.3"
-        val springDependencyManagementVersion = "1.1.4"
-        val ktlintVersion = "12.1.0"
+        val kotlinVersion: String by settings
+        val springBootVersion: String by settings
+        val springDependencyManagementVersion: String by settings
+        val ktlintVersion: String by settings
+        val koverVersion: String by settings
 
         id("org.jetbrains.kotlin.jvm") version kotlinVersion
         id("org.jetbrains.kotlin.plugin.spring") version kotlinVersion
         id("org.springframework.boot") version springBootVersion
         id("io.spring.dependency-management") version springDependencyManagementVersion
         id("org.jlleitschuh.gradle.ktlint") version ktlintVersion
+        id("org.jetbrains.kotlinx.kover") version koverVersion
     }
 
     repositories {

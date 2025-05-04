@@ -1,9 +1,11 @@
 plugins {
     id("org.springframework.boot")
     id("io.spring.dependency-management")
+    id("org.jlleitschuh.gradle.ktlint")
+    id("org.jetbrains.kotlinx.kover")
+
     kotlin("jvm")
     kotlin("plugin.spring")
-    id("org.jlleitschuh.gradle.ktlint")
 }
 
 allprojects {
@@ -22,6 +24,7 @@ subprojects {
     apply(plugin = "org.springframework.boot")
     apply(plugin = "io.spring.dependency-management")
     apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "org.jetbrains.kotlinx.kover")
 
     java {
         sourceCompatibility = JavaVersion.VERSION_21

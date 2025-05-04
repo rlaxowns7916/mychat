@@ -36,7 +36,7 @@ internal class EmbeddedRedisStorageConfiguration {
     @PreDestroy
     fun preDestroy() {
         redisServer.stop()
-        logger.info("[EmbeddedRedis][Stop]")
+        logger.info { "[EmbeddedRedis][Stop]" }
     }
 
     companion object {
