@@ -1,0 +1,45 @@
+package com.example.websocketgateway.websocket
+
+import com.example.websocketgateway.domain.exception.DomainErrorType
+import com.example.websocketgateway.domain.exception.DomainException
+import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
+import io.github.oshai.kotlinlogging.KotlinLogging
+import io.netty.channel.ChannelHandler.Sharable
+import io.netty.channel.ChannelHandlerContext
+import io.netty.channel.SimpleChannelInboundHandler
+import io.netty.handler.codec.stomp.StompFrame
+
+@Sharable
+class StompMessageHandler(
+    private val commandHandlerFactory: StompCommandHandlerFactory,
+) : SimpleChannelInboundHandler<StompFrame>() {
+    override fun channelRead0(
+        ctx: ChannelHandlerContext,
+        msg: StompFrame,
+    ) {
+        if (msg.decoderResult().isFailure) {
+            logger.error(msg.decoderResult().cause()) { "[StompMessageHandler][DecodeFail]" }
+            throw DomainException(DomainErrorType.INVALID_FRAME_FORMAT)
+        }
+
+        val command = msg.command()
+        val stompVersion = ctx.channel().attr(StompVersion.CHANNEL_ATTRIBUTE_KEY).get()
+        logger.info { "[StompMessageHandler][Read] (command:$command, version:${stompVersion.version})" }
+
+        val handler = commandHandlerFactory.create(stompVersion, command)
+        val responseFuture = handler.handle(msg)
+
+        responseFuture.whenCompleteAsync({ response, error ->
+            if (error != null) {
+                ctx.fireExceptionCaught(error)
+            } else if (response != null) {
+                ctx.channel().writeAndFlush(response)
+            }
+        }, ctx.channel().eventLoop())
+    }
+
+    companion object {
+        private const val AUTHORIZATION_KEY = "Authorization"
+        private val logger = KotlinLogging.logger { }
+    }
+}

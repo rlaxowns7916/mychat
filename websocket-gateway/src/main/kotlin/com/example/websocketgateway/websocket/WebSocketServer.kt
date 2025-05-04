@@ -9,7 +9,10 @@ import io.netty.channel.socket.nio.NioServerSocketChannel
 import io.netty.handler.logging.LogLevel
 import io.netty.handler.logging.LoggingHandler
 
-class WebSocketServer(private val port: Int) {
+class WebSocketServer(
+    private val port: Int,
+    private val stompMessageHandler: StompMessageHandler,
+) {
     private val bossGroup = NioEventLoopGroup(1)
     private val workerGroup = NioEventLoopGroup()
     private var channel: Channel? = null
@@ -23,7 +26,7 @@ class WebSocketServer(private val port: Int) {
                 .handler(LoggingHandler(LogLevel.DEBUG))
                 .childOption(ChannelOption.SO_KEEPALIVE, true)
                 .childOption(ChannelOption.TCP_NODELAY, true)
-                .childHandler(WebSocketServerPipeLineInitializer())
+                .childHandler(WebSocketServerPipeLineInitializer(stompMessageHandler))
 
             channel = bootStrap.bind(port).sync().channel()
             logger.info { "[WebSocketServer][Started] (port:$port)" }
