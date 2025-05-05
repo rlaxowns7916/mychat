@@ -78,6 +78,7 @@ class StompProtocolHandler(
                  */
                 .addLast(StompSubframeAggregator(65536))
                 .addLast(StompMessageHandler(commandHandlerFactory))
+                .addLast(GlobalExceptionHandler())
         }
     }
 

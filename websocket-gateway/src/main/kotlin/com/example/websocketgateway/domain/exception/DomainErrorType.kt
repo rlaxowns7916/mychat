@@ -8,18 +8,22 @@ enum class DomainErrorType(
         code = 1000,
         message = "Internal server error",
     ),
-    INVALID_FRAME_FORMAT(
+    UNSUPPORTED_OPERATION(
         code = 1001,
+        message = "Unsupported operation",
+    ),
+    INVALID_FRAME_FORMAT(
+        code = 1002,
         message = "Invalid frame format",
     ),
 
     INVALID_AUTH_KEY(
-        code = 1002,
+        code = 1003,
         message = "Invalid auth key",
     ),
 
     EXPIRED(
-        code = 1003,
+        code = 1004,
         message = "Expired",
     ),
 }
