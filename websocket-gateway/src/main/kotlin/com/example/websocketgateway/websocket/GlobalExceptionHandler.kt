@@ -23,13 +23,13 @@ class GlobalExceptionHandler : ChannelInboundHandlerAdapter() {
     }
 
     private fun resolveErrorType(cause: Throwable): DomainErrorType {
-        when (cause) {
+        return when (cause) {
             is DomainException -> {
-                return cause.errorType
+                cause.errorType
             }
             else -> {
                 logger.error(cause) { "[GlobalExceptionHandler][UnExpectedError]" }
-                return DomainErrorType.INTERNAL_SERVER_ERROR
+                DomainErrorType.INTERNAL_SERVER_ERROR
             }
         }
     }
