@@ -19,7 +19,6 @@ class StompCommandHandlerFactory {
             StompCommand.NACK -> TODO()
             StompCommand.DISCONNECT -> TODO()
             StompCommand.MESSAGE -> TODO()
-            StompCommand.ERROR -> TODO()
             else -> {
                 TODO("UnsupportedCommand Handler")
             }
