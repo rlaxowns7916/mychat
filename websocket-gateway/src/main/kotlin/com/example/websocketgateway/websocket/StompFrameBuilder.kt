@@ -26,8 +26,6 @@ class StompFrameBuilder<T>(
     fun content(content: T) = apply { this.content = content }
 
     fun build(): StompFrame {
-        requireNotNull(command) { "STOMP command must not be null" }
-
         val stompBody =
             content?.let {
                 val serialized = OBJECT_MAPPER.writeValueAsString(it)

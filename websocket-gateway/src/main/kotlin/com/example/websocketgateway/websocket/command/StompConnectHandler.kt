@@ -1,8 +1,9 @@
 package com.example.websocketgateway.websocket.command
 
+import com.example.websocketgateway.supports.NettyLogger
+import com.example.websocketgateway.supports.TraceContext
 import com.example.websocketgateway.websocket.StompFrameBuilder
 import com.example.websocketgateway.websocket.StompVersion
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.handler.codec.stomp.StompCommand
 import io.netty.handler.codec.stomp.StompFrame
 import java.util.concurrent.CompletableFuture
@@ -13,9 +14,12 @@ import java.util.concurrent.CompletableFuture
 class StompConnectHandler(
     private val version: StompVersion,
 ) : StompCommandHandler(version) {
-    override fun handle(frame: StompFrame): CompletableFuture<StompFrame> {
+    override fun handle(
+        traceContext: TraceContext,
+        frame: StompFrame,
+    ): CompletableFuture<StompFrame> {
         val connectionFrame = connectedFrame()
-        logger.info { "[StompConnectHandler][onConnect] (responseFrame: $connectionFrame)" }
+        logger.info(traceContext) { "[StompConnectHandler][onConnect] (responseFrame: $connectionFrame)" }
 
         return CompletableFuture.completedFuture(connectedFrame())
     }
@@ -25,6 +29,6 @@ class StompConnectHandler(
     }
 
     companion object {
-        private val logger = KotlinLogging.logger {}
+        private val logger = NettyLogger.getLogger(StompConnectHandler::class.java)
     }
 }

@@ -1,6 +1,5 @@
 package com.example.websocketgateway.websocket
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.buffer.ByteBuf
 import io.netty.channel.ChannelHandlerContext
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame
@@ -60,9 +59,5 @@ class StompSubFrameToWebsocketFrameEncoder : StompSubframeEncoder() {
     private fun isTextFrame(headersSubframe: StompHeadersSubframe): Boolean {
         val contentType = headersSubframe.headers().getAsString(StompHeaders.CONTENT_TYPE)
         return contentType != null && (contentType.startsWith("text") || contentType.startsWith("application/json"))
-    }
-
-    companion object {
-        private val logger = KotlinLogging.logger { }
     }
 }
