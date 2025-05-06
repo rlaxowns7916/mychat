@@ -1,7 +1,8 @@
 package com.example.websocketgateway.websocket
 
+import com.example.websocketgateway.supports.NettyLogger
+import com.example.websocketgateway.supports.TraceContext
 import com.example.websocketgateway.websocket.command.StompCommandHandlerFactory
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.netty.channel.ChannelHandlerContext
 import io.netty.channel.ChannelInboundHandlerAdapter
 import io.netty.handler.codec.http.websocketx.WebSocketFrameAggregator
@@ -12,10 +13,12 @@ import io.netty.handler.codec.stomp.StompSubframeDecoder
 class StompProtocolHandler(
     private val commandHandlerFactory: StompCommandHandlerFactory,
 ) : ChannelInboundHandlerAdapter() {
-    private val logger = KotlinLogging.logger {}
-
     override fun channelActive(ctx: ChannelHandlerContext) {
-        logger.info { "[StompProtocolHandler][Active] (client: ${ctx.channel().remoteAddress()})" }
+        val traceContext =
+            TraceContext.root().also {
+                ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).set(it)
+            }
+        logger.info(traceContext) { "[StompProtocolHandler][Active] (client: ${ctx.channel().remoteAddress()})" }
     }
 
     override fun userEventTriggered(
@@ -24,11 +27,12 @@ class StompProtocolHandler(
     ) {
         if (evt is WebSocketServerProtocolHandler.HandshakeComplete) {
             val channel = ctx.channel()
+            val traceContext = ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
             val remoteAddress = ctx.channel().remoteAddress()
             val requestUri = evt.requestUri()
             val selectedSubProtocol = evt.selectedSubprotocol()
 
-            logger.info {
+            logger.info(traceContext) {
                 """
                 [StompProtocolHandler][WebSocketHandshakeComplete]( 
                     - client: $remoteAddress, 
@@ -83,6 +87,11 @@ class StompProtocolHandler(
     }
 
     override fun channelInactive(ctx: ChannelHandlerContext) {
-        logger.info { "[StompProtocolHandler][InActive] (client: ${ctx.channel().remoteAddress()})" }
+        val traceContext = ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
+        logger.info(traceContext) { "[StompProtocolHandler][InActive] (client: ${ctx.channel().remoteAddress()})" }
+    }
+
+    companion object {
+        private val logger = NettyLogger.getLogger(StompProtocolHandler::class.java)
     }
 }

@@ -1,5 +1,7 @@
 package com.example.websocketgateway.websocket.command
 
+import com.example.websocketgateway.domain.exception.DomainErrorType
+import com.example.websocketgateway.domain.exception.DomainException
 import com.example.websocketgateway.websocket.StompVersion
 import io.netty.handler.codec.stomp.StompCommand
 import org.springframework.stereotype.Component
@@ -19,9 +21,14 @@ class StompCommandHandlerFactory {
             StompCommand.NACK -> TODO()
             StompCommand.DISCONNECT -> TODO()
             StompCommand.MESSAGE -> TODO()
-            else -> {
-                TODO("UnsupportedCommand Handler")
-            }
+            StompCommand.STOMP -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.CONNECTED -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.BEGIN -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.ABORT -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.COMMIT -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.RECEIPT -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.ERROR -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
+            StompCommand.UNKNOWN -> throw DomainException(DomainErrorType.UNSUPPORTED_OPERATION)
         }
     }
 }
