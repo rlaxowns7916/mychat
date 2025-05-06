@@ -8,6 +8,8 @@ fun withEmbeddedChannel(
     block: (EmbeddedChannel) -> Unit,
 ) {
     val channel = EmbeddedChannel(*channelHandlers)
+    channel.attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).set(TraceContext.root())
+
     try {
         block(channel)
     } finally {

@@ -14,9 +14,10 @@ class StompProtocolHandler(
     private val commandHandlerFactory: StompCommandHandlerFactory,
 ) : ChannelInboundHandlerAdapter() {
     override fun channelActive(ctx: ChannelHandlerContext) {
-        val traceContext = TraceContext.root().also {
-            ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).set(it)
-        }
+        val traceContext =
+            TraceContext.root().also {
+                ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).set(it)
+            }
         logger.info(traceContext) { "[StompProtocolHandler][Active] (client: ${ctx.channel().remoteAddress()})" }
     }
 
@@ -26,7 +27,7 @@ class StompProtocolHandler(
     ) {
         if (evt is WebSocketServerProtocolHandler.HandshakeComplete) {
             val channel = ctx.channel()
-            val traceContext =ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
+            val traceContext = ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
             val remoteAddress = ctx.channel().remoteAddress()
             val requestUri = evt.requestUri()
             val selectedSubProtocol = evt.selectedSubprotocol()
