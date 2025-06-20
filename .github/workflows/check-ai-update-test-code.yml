@@ -1,0 +1,40 @@
+name: Check AI Test Code Updates
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
+      - develop
+
+jobs:
+  check-ai-test-commits:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+      pull-requests: write
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Run AI Test Commit Checker
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python .github/workflows/scripts/check_ai_test_commits.py \
+            --pr-number ${{ github.event.pull_request.number }} \
+            --repository ${{ github.repository }} \
+            --github-token ${{ secrets.GITHUB_TOKEN }}
