@@ -7,8 +7,5 @@ import org.springframework.boot.test.context.SpringBootTest
 class CoreApiApplicationTests {
     @Test
     fun contextLoads() {
-        /**
-         * AI 테스트용
-         */
     }
 }
