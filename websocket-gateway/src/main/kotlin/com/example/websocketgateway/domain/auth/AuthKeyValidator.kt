@@ -4,6 +4,7 @@ import com.example.websocketgateway.domain.exception.DomainErrorType
 import com.example.websocketgateway.domain.exception.DomainException
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 import org.springframework.stereotype.Component
 import java.time.LocalDateTime
 
@@ -14,19 +15,24 @@ class AuthKeyValidator {
             .registerModule(JavaTimeModule())
 
     fun validateAndGet(key: String): AuthKey {
-        // AIDEV-NOTE: JSON 파싱 실패와 만료 시간 검증을 분리하여 명확한 에러 타입 제공
+        val authKey = parse(key)
+        val now = LocalDateTime.now()
+
+        if (authKey.isExpired(now)) {
+            throw DomainException(DomainErrorType.EXPIRED)
+        }
+
+        return authKey
+    }
+
+    private fun parse(key: String): AuthKey {
         return try {
-            val authKey = objectMapper.readValue(key, AuthKey::class.java)
-
-            if (authKey.isExpired(LocalDateTime.now())) {
-                throw DomainException(DomainErrorType.EXPIRED)
-            }
-
-            authKey
-        } catch (e: DomainException) {
-            throw e
+            objectMapper.readValue<AuthKey>(key)
         } catch (e: Exception) {
             throw DomainException(DomainErrorType.INVALID_AUTH_KEY)
         }
+    }
+
+    companion object {
     }
 }
