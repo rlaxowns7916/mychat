@@ -38,3 +38,6 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### AI Documentation ###
+CLAUDE.md
