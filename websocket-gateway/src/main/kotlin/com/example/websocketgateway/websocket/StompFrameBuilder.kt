@@ -34,11 +34,10 @@ class StompFrameBuilder<T>(
             } ?: Unpooled.EMPTY_BUFFER
 
         return DefaultStompFrame(command, stompBody).apply {
-            headers().apply {
-                set(StompHeaders.VERSION, version.subProtocol)
-                set(StompHeaders.CONTENT_TYPE, "application/json")
-                headers.forEach { (k, v) -> headers().set(k, v) }
-            }
+            val frameHeaders = headers()
+            frameHeaders.set(StompHeaders.VERSION, version.version)
+            frameHeaders.set(StompHeaders.CONTENT_TYPE, "application/json")
+            headers.forEach { (k, v) -> frameHeaders.set(k, v) }
         }
     }
 

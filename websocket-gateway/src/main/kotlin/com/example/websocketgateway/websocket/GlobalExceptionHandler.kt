@@ -16,8 +16,12 @@ class GlobalExceptionHandler : ChannelInboundHandlerAdapter() {
         ctx: ChannelHandlerContext,
         cause: Throwable,
     ) {
-        val traceContext = ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
-        val version = ctx.channel().attr(StompVersion.CHANNEL_ATTRIBUTE_KEY).get()
+        val traceContext =
+            ctx.channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
+                ?: TraceContext.root()
+        val version =
+            ctx.channel().attr(StompVersion.CHANNEL_ATTRIBUTE_KEY).get()
+                ?: StompVersion.VERSION1_2
 
         val errorType =
             when (cause) {
@@ -42,7 +46,9 @@ class GlobalExceptionHandler : ChannelInboundHandlerAdapter() {
     }
 
     private fun ChannelFuture.closeSafety() {
-        val traceContext = channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
+        val traceContext =
+            channel().attr(TraceContext.TRACE_CONTEXT_ATTRIBUTE_KEY).get()
+                ?: TraceContext.root()
         this.addListener { future ->
             if (future.isSuccess) {
                 logger.info(traceContext) { "[GlobalExceptionHandler][SendErrorFrame][Success]" }

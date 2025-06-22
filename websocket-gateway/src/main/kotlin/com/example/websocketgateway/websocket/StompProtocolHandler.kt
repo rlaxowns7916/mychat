@@ -52,6 +52,7 @@ class StompProtocolHandler(
                  * - WebSocketServerProtocolHandler가 추가한 기본 디코더는 분할된 프레임을 자동으로 조합하지 않음
                  * - 분할을 인식하는 방법: 첫 프레임(FIN=0, opcode=0x1/0x2), 중간/마지막 프레임(opcode=0x0)의 헤더 플래그로 구분
                  * - 프레임 집계가 없으면 STOMP 디코더는 불완전한 메시지를 받아 디코딩 실패 가능성 있음
+                 * AIDEV-NOTE: WebSocket 프레임 분할 처리는 대용량 메시지에서 중요. 집계 없이는 STOMP 디코딩 실패 위험
                  */
                 .addLast(WebSocketFrameAggregator(65536))
                 /**
